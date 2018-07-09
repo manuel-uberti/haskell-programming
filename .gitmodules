@@ -1,3 +1,0 @@
-[submodule "hello"]
-	path = hello
-	url = https://github.com/haskellbook/hello
