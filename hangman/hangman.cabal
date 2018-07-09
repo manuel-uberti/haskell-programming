@@ -1,0 +1,21 @@
+name:                hangman
+version:             0.1.0.0
+synopsis:            Playing Hangman
+homepage:            Manuel
+license:             BSD3
+license-file:        LICENSE
+author:              Manuel Uberti
+maintainer:          manuel.uberti@inventati.org
+copyright:           2018 Manuel Uberti
+category:            Game
+build-type:          Simple
+cabal-version:       >=1.10
+extra-source-files:  data/dict.txt
+
+executable hangman
+  hs-source-dirs:      src
+  main-is:             Main.hs
+  default-language:    Haskell2010
+  build-depends:       base >= 4.7 && < 5
+                     , random
+                     , split
