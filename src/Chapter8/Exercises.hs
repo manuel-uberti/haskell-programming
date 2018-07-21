@@ -1,4 +1,4 @@
-module Exercises where
+module Chapter8.Exercises where
 
 
 -- Reviewing currying

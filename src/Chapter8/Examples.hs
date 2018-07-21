@@ -1,4 +1,4 @@
-module Examples where
+module Chapter8.Examples where
 
 incTimes :: (Eq a, Num a) => a -> a -> a
 incTimes 0 n = n
