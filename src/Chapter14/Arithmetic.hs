@@ -106,9 +106,6 @@ prop_reverseTwice =
   forAll genListInt (\xs -> reverseTwice xs)
 
 
--- 8
-
-
 main :: IO ()
 main = do
   quickCheck prop_halfIdentity
