@@ -12,7 +12,9 @@ h x = g (f x)
 
 -- 2
 data A
+
 data B
+
 data C
 
 q :: A -> B
@@ -26,7 +28,9 @@ e x = w (q x)
 
 -- 3
 data X
+
 data Y
+
 data Z
 
 xz :: X -> Z
@@ -35,9 +39,9 @@ xz = undefined
 yz :: Y -> Z
 yz = undefined
 
-xform :: (X, Y) -> (Z, Z)
-xform (x,y) = (xz x, yz y)
+xform :: ( X, Y ) -> ( Z, Z )
+xform ( x, y ) = ( xz x, yz y )
 
 -- 4
-munge :: (x -> y) -> (y -> (w, z)) -> x -> z
+munge :: (x -> y) -> (y -> ( w, z )) -> x -> z
 munge xToY wzToY x = snd (wzToY (xToY x))

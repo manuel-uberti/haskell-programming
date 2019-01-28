@@ -1,16 +1,11 @@
 module Chapter11.HuttonsRazor where
 
-data Expr
-  = Lit Integer
-  | Add Expr
-        Expr
-
+data Expr = Lit Integer | Add Expr Expr
 
 -- 1
 eval :: Expr -> Integer
 eval (Lit i) = i
 eval (Add e1 e2) = eval e1 + eval e2
-
 
 -- 2
 printExpr :: Expr -> String
