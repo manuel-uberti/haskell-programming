@@ -145,12 +145,13 @@ instance (Arbitrary a, Arbitrary b) => Arbitrary (Or a b) where
   arbitrary = do
     a <- arbitrary
     b <- arbitrary
-    frequency [ (1, return $ Fst a), (3, return $ Snd b)]
+    frequency [(1, return $ Fst a), (3, return $ Snd b)]
 
 orAssoc :: (Eq m, Semigroup m) => m -> m -> m -> Bool
 orAssoc a b c = (a <> b) <> c == a <> (b <> c)
 
 type OrInt = Or Int Int
+
 type OrIntAssoc = OrInt -> OrInt -> OrInt -> Bool
 
 main :: IO ()
