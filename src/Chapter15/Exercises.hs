@@ -1,5 +1,6 @@
 module Chapter15.Exercises where
 
+import qualified Data.Monoid as Monoid
 import Data.Semigroup
 import Test.QuickCheck
 
@@ -154,6 +155,52 @@ type OrInt = Or Int Int
 
 type OrIntAssoc = OrInt -> OrInt -> OrInt -> Bool
 
+-- 9
+newtype Combine a b = Combine
+  { unCombine :: (a -> b)
+  }
+
+instance Semigroup b => Semigroup (Combine a b) where
+  Combine a <> Combine b = Combine (\x -> a x <> b x)
+
+instance (Semigroup b, Monoid b) => Monoid (Combine a b) where
+  mempty = Combine mempty
+  mappend = (<>)
+
+-- Needed help here
+-- See: https://stackoverflow.com/a/52984192/4955686
+monoidLeftIdentity :: (Eq m, Monoid m) => m -> Bool
+monoidLeftIdentity m = mappend mempty m == m
+
+monoidRightIdentity :: (Eq m, Monoid m) => m -> Bool
+monoidRightIdentity m = mappend m mempty == m
+
+monoidLeftIdentityF ::
+     (Eq b, Monoid m) => (Fun a b -> m) -> (m -> a -> b) -> a -> Fun a b -> Bool
+monoidLeftIdentityF wrap eval point candidate =
+  eval (mappend mempty m) point == eval m point
+  where
+    m = wrap candidate
+
+monoidRightIdentityF ::
+     (Eq b, Monoid m) => (Fun a b -> m) -> (m -> a -> b) -> a -> Fun a b -> Bool
+monoidRightIdentityF wrap eval point candidate =
+  eval (mappend m mempty) point == eval m point
+  where
+    m = wrap candidate
+
+-- 10
+newtype Comp a = Comp
+  { unComp :: (a -> a)
+  }
+
+instance Semigroup a => Semigroup (Comp a) where
+  Comp a <> Comp b = Comp (a <> b)
+
+instance (Semigroup a, Monoid a) => Monoid (Comp a) where
+  mempty = Comp mempty
+  mappend = (<>)
+
 main :: IO ()
 main = do
   quickCheck (semigroupAssoc :: TrivAssoc)
@@ -162,3 +209,7 @@ main = do
   quickCheck (semigroupAssoc :: ThreeAssoc)
   quickCheck (semigroupAssoc :: FourAssoc)
   quickCheck (orAssoc :: OrIntAssoc)
+  quickCheck $
+    (monoidLeftIdentityF (Combine . applyFun) unCombine :: Int -> Fun Int (Sum Int) -> Bool)
+  quickCheck $
+    (monoidRightIdentityF (Combine . applyFun) unCombine :: Int -> Fun Int (Sum Int) -> Bool)
