@@ -39,9 +39,9 @@ xz = undefined
 yz :: Y -> Z
 yz = undefined
 
-xform :: ( X, Y ) -> ( Z, Z )
-xform ( x, y ) = ( xz x, yz y )
+xform :: (X, Y) -> (Z, Z)
+xform (x, y) = (xz x, yz y)
 
 -- 4
-munge :: (x -> y) -> (y -> ( w, z )) -> x -> z
+munge :: (x -> y) -> (y -> (w, z)) -> x -> z
 munge xToY wzToY x = snd (wzToY (xToY x))

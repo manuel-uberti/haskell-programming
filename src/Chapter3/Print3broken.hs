@@ -5,9 +5,9 @@ greeting = "Yarrrrr"
 
 printSecond :: IO ()
 printSecond = do
-    putStrLn greeting
+  putStrLn greeting
 
 main :: IO ()
 main = do
-    putStrLn greeting
-    printSecond
+  putStrLn greeting
+  printSecond

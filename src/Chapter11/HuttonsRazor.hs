@@ -1,6 +1,9 @@
 module Chapter11.HuttonsRazor where
 
-data Expr = Lit Integer | Add Expr Expr
+data Expr
+  = Lit Integer
+  | Add Expr
+        Expr
 
 -- 1
 eval :: Expr -> Integer

@@ -44,16 +44,19 @@ example = 1
 -- c = 1 --> b doesn't compile, must add c
 -- Write a type signature
 -- 1
-functionH :: [ a ] -> a
-functionH (x : _) = x
+functionH :: [a] -> a
+functionH (x:_) = x
 
 -- 2
 functionC :: (Ord a) => a -> a -> Bool
-functionC x y = if (x > y) then True else False
+functionC x y =
+  if (x > y)
+    then True
+    else False
 
 -- 3
-functionS :: ( a, b ) -> b
-functionS ( x, y ) = y
+functionS :: (a, b) -> b
+functionS (x, y) = y
 
 -- Given a type, write the function
 -- 1
@@ -73,8 +76,7 @@ c' :: a -> b -> b
 c' a b = b
 
 -- 5
-r :: [ a ] -> [ a ]
-
+r :: [a] -> [a]
 -- r l = tail l
 r l = l ++ l
 

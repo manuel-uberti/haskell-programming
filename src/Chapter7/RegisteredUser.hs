@@ -1,12 +1,17 @@
 module RegisteredUser where
 
-newtype Username = Username String
+newtype Username =
+  Username String
 
-newtype AccountNumber = AccountNumber Integer
+newtype AccountNumber =
+  AccountNumber Integer
 
-data User = UnregisteredUser | RegisteredUser Username AccountNumber
+data User
+  = UnregisteredUser
+  | RegisteredUser Username
+                   AccountNumber
 
 printUser :: User -> IO ()
 printUser UnregisteredUser = putStrLn "UnregisteredUser"
-printUser (RegisteredUser (Username name) (AccountNumber acctNum))
-    = putStrLn $ name ++ " " ++ show acctNum
+printUser (RegisteredUser (Username name) (AccountNumber acctNum)) =
+  putStrLn $ name ++ " " ++ show acctNum

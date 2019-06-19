@@ -1,6 +1,7 @@
 module Trivial where
 
-data Trivial = Trivial'
+data Trivial =
+  Trivial'
 
 instance Eq Trivial where
-    Trivial' == Trivial' = True
+  Trivial' == Trivial' = True

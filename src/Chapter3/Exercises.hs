@@ -21,9 +21,6 @@ letterIndex x = s !! x
 rvrs = a ++ " " ++ b ++ " " ++ c
   where
     s = "Curry is awesome"
-
     a = drop 9 s
-
     b = drop 6 (take 8 s)
-
     c = take 5 s
