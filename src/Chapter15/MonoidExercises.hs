@@ -72,6 +72,20 @@ instance (Arbitrary a, Arbitrary b) => Arbitrary (Two a b) where
 type TwoAssoc
    = Two String String -> Two String String -> Two String String -> Bool
 
+-- 4
+-- See exercise 6 in ./Exercise.hs
+-- 5
+-- See exercise 7 in ./Exercise.hs
+-- 6
+-- See exercise 9 in ./Exercise.hs
+-- 7
+-- See exercise 10 in ./Exercise.hs
+
+-- 8 TODO
+newtype Mem s a = Mem
+  { runMem :: s -> (a, s)
+  }
+
 main :: IO ()
 main = do
   quickCheck (semigroupAssoc :: TrivAssoc)
