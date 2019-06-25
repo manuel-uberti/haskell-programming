@@ -1,5 +1,8 @@
+{-# LANGUAGE FlexibleInstances #-}
+
 module Chapter16.Exercises where
 
+import GHC.Arr
 import Test.QuickCheck
 
 -- Be Kind
@@ -39,7 +42,7 @@ functorIdentity :: (Functor f, Eq (f a)) => f a -> Bool
 functorIdentity f = fmap id f == f
 
 functorCompose :: (Eq (f c), Functor f) => (a -> b) -> (b -> c) -> f a -> Bool
-functorCompose f g x = (fmap g (fmap f x)) == fmap (g . f) x
+functorCompose f g x = fmap g (fmap f x) == fmap (g . f) x
 
 -- 1
 newtype Identity a =
@@ -227,8 +230,8 @@ testComposeFour' = composeFour' (Four' 1 2 3 4)
 -- 8
 data Trivial =
   Trivial
--- The kind is *, not * -> *, so there cannot be a Functor instance.
 
+-- The kind is *, not * -> *, so there cannot be a Functor instance.
 -- Possibly
 data Possibly a
   = LolNope
@@ -255,3 +258,174 @@ instance Functor (Sum a) where
 --    Either’s Left, impossible?
 -- A: Because to have an instance of Functor for Sum we treat a as part of f.
 --    Sum a b would be of kind *, but we need kind * -> * for Functor.
+
+-- Determine if a valid Functor can be written for the datatype provided.
+-- 1
+-- Bool has kind *, not * -> *, so there can be no instance of Functor
+
+-- 2
+data BoolAndSomethingElse a
+  = False' a
+  | True' a
+
+instance Functor BoolAndSomethingElse where
+  fmap f (False' a) = False' (f a)
+  fmap f (True' a) = True' (f a)
+
+-- 3
+data BoolAndMaybeSomethingElse a
+  = Falsish
+  | Truish a
+
+instance Functor BoolAndMaybeSomethingElse where
+  fmap _ Falsish = Falsish
+  fmap f (Truish a) = Truish (f a)
+
+-- 4
+newtype Mu f = InF
+  { outF :: f (Mu f)
+  }
+
+-- Mu has kind (* -> *) -> *, which is not * -> * as we need for the Functor
+-- instance
+-- 5
+data D =
+  D (Array Word Word)
+    Int
+    Int
+
+-- D has kind *, which is not * -> * as we need for the Functor instance
+-- Rearrange the arguments to the type constructor of the datatype so the
+-- Functor instance works.
+-- 1
+data Sum' a b
+  = First' b
+  | Second' a
+
+instance Functor (Sum' e) where
+  fmap f (First' a) = First' (f a)
+  fmap f (Second' b) = Second' b
+
+-- 2
+data Company a b c
+  = DeepBlue a
+             b
+  | Something c
+
+instance Functor (Company e e') where
+  fmap f (Something b) = Something (f b)
+  fmap _ (DeepBlue a c) = DeepBlue a c
+
+-- 3
+data More a b
+  = L b
+      a
+      b
+  | R a
+      b
+      a
+  deriving (Eq, Show)
+
+instance Functor (More x) where
+  fmap f (L a b a') = L (f a) b (f a')
+  fmap f (R b a b') = R b (f a) b'
+
+-- Write Functor instances for the following datatypes.
+-- 1
+data Quant a b
+  = Finance
+  | Desk a
+  | Bloor b
+
+instance Functor (Quant e) where
+  fmap _ Finance = Finance
+  fmap _ (Desk a) = Desk a
+  fmap f (Bloor b) = Bloor (f b)
+
+-- 2
+data K a b =
+  K a
+
+instance Functor (K e) where
+  fmap _ (K a) = K a
+
+-- 3
+newtype Flip f a b =
+  Flip (f b a)
+  deriving (Eq, Show)
+
+instance Functor (Flip K a) where
+  fmap f (Flip (K a)) = Flip $ K (f a)
+
+-- 4
+data EvilGoateeConst a b =
+  GoatyConst b
+
+instance Functor (EvilGoateeConst e) where
+  fmap f (GoatyConst a) = GoatyConst (f a)
+
+-- 5
+data LiftItOut f a =
+  LiftItOut (f a)
+
+instance Functor e => Functor (LiftItOut e) where
+  fmap f (LiftItOut a) = LiftItOut (fmap f a)
+
+-- 6
+data Parappa f g a =
+  DaWrappa (f a)
+           (g a)
+
+instance (Functor e, Functor f) => Functor (Parappa e f) where
+  fmap f (DaWrappa a b) = DaWrappa (fmap f a) (fmap f b)
+
+-- 7
+data IgnoreOne f g a b =
+  IgnoringSomething (f a)
+                    (g b)
+
+instance Functor g => Functor (IgnoreOne f g h) where
+  fmap f (IgnoringSomething a b) = IgnoringSomething a (fmap f b)
+
+-- 8
+data Notorious g o a t =
+  Notorious (g o)
+            (g a)
+            (g t)
+
+instance Functor a => Functor (Notorious a b c) where
+  fmap f (Notorious a b c) = Notorious a b (fmap f c)
+
+-- 9
+data List a
+  = Nil
+  | Cons a
+         (List a)
+
+instance Functor List where
+  fmap _ Nil = Nil
+  fmap f (Cons a b) = Cons (f a) (fmap f b)
+
+-- 10
+data GoatLord a
+  = NoGoat
+  | OneGoat a
+  | MoreGoats (GoatLord a)
+              (GoatLord a)
+              (GoatLord a)
+
+instance Functor GoatLord where
+  fmap _ NoGoat = NoGoat
+  fmap f (OneGoat a) = OneGoat (f a)
+  fmap f (MoreGoats a b c) = MoreGoats (fmap f a) (fmap f b) (fmap f c)
+
+-- 11
+data TalkToMe a
+  = Halt
+  | Print String a
+  | Read (String -> a)
+
+instance Functor TalkToMe where
+  fmap _ Halt = Halt
+  fmap f (Print a b) = Print a (f b)
+  fmap f (Read g) = Read (f . g)
