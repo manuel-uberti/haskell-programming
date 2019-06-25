@@ -225,7 +225,33 @@ composeFour' = functorCompose (+ 1) (* 2)
 testComposeFour' = composeFour' (Four' 1 2 3 4)
 
 -- 8
-
-data Trivial = Trivial
-
+data Trivial =
+  Trivial
 -- The kind is *, not * -> *, so there cannot be a Functor instance.
+
+-- Possibly
+data Possibly a
+  = LolNope
+  | Yeppers a
+  deriving (Eq, Show)
+
+instance Functor Possibly where
+  fmap _ LolNope = LolNope
+  fmap f (Yeppers a) = Yeppers (f a)
+
+-- Short Exercise
+-- 1
+data Sum a b
+  = First a
+  | Second b
+  deriving (Eq, Show)
+
+instance Functor (Sum a) where
+  fmap _ (First a) = First a
+  fmap f (Second b) = Second (f b)
+
+-- 2
+-- Q: Why is a Functor instance that applies the function only to First,
+--    Either’s Left, impossible?
+-- A: Because to have an instance of Functor for Sum we treat a as part of f.
+--    Sum a b would be of kind *, but we need kind * -> * for Functor.
