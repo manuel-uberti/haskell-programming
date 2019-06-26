@@ -19,3 +19,4 @@ library
                      , scientific
                      , hspec
                      , QuickCheck
+                     , containers
