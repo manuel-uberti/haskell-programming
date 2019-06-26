@@ -6,7 +6,7 @@ import Data.Maybe (fromJust)
 -- Lookups
 -- 1
 added :: Maybe Integer
-added = (+3) <$> (lookup 3 $ zip [1, 2, 3] [4, 5, 6])
+added = (+ 3) <$> (lookup 3 $ zip [1, 2, 3] [4, 5, 6])
 
 -- 2
 y :: Maybe Integer
@@ -33,6 +33,7 @@ maxed = max' <$> x <*> y'
 
 -- 4
 xs = [1, 2, 3]
+
 ys = [4, 5, 6]
 
 x4 :: Maybe Integer
@@ -43,3 +44,34 @@ y4 = lookup 2 $ zip xs ys
 
 summed :: Maybe Integer
 summed = fmap sum $ (,) <$> x4 <*> y4
+
+-- Identity Instance
+newtype Identity a =
+  Identity a
+  deriving (Eq, Ord, Show)
+
+instance Functor Identity where
+  fmap f (Identity a) = Identity (f a)
+
+instance Applicative Identity where
+  pure a = Identity a
+  (<*>) (Identity a) (Identity b) = Identity (a b)
+
+-- Constant Instance
+newtype Constant a b = Constant
+  { getConstant :: a
+  } deriving (Eq, Ord, Show)
+
+instance Functor (Constant a) where
+  fmap _ (Constant a) = Constant a
+
+instance Monoid a => Applicative (Constant a) where
+  pure _ = Constant mempty
+  (<*>) (Constant a) (Constant _) = Constant a
+
+-- Fixer Upper
+-- 1
+fu' = const <$> Just "Hello" <*> Just "World"
+
+-- 2
+fu'' = (,,,) <$> Just 90 <*> Just 10 <*> Just "Tierness" <*> Just [1, 2, 3]
